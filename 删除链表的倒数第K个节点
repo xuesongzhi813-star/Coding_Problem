@@ -1,0 +1,57 @@
+# 删除链表的倒数第K个节点
+
+## 题目解析
+
+删除链表的倒数第K个节点，其余节点相对顺序不变，并且返回新链表的头节点
+
+## 解题策略
+
+定义新的“虚拟头节点”，slow，fast双指针从虚拟头结点开始，相差k个位置。当fast指针遍历到链表尾部，slow指针刚好指向“要删除的前一个节点”。
+
+补充：  
+- 虚拟头节点：保证不会指向刚好删除的节点，而是前一个
+
+- 为什么slow是前一个节点：前一个节点更好删除，且保证后续剩余部分不丢失
+
+```
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+      //定义一个虚拟头节点
+      ListNode newHead=new ListNode(0,head);
+      //定义一个快，慢指针，中间差k个
+      ListNode slow=newHead;
+      int k=n;
+      ListNode fast=newHead;
+      while(k>0){
+        fast=fast.next;
+        k--;
+      }
+      //开始快慢指针遍历，当fast到最后一个节点时，slow就指向要删除的节点前一个
+      //为什么是前一个？这样更方便删除，并且连接起后面的剩余部分
+      while(fast.next!=null){
+        slow=slow.next;
+        fast=fast.next;
+      }
+      //开始删除
+      slow.next=slow.next.next;
+      return newHead.next;  
+    }
+}
+```
+
+原始笔记参考：
+
+常用操作：设置一个虚拟头节点，防止，因为接近于数组长度时，造成一些越界问题  
+
+解决策略：快慢双指针，slow，和fast相差n，当fast越界时，slow也刚好指向删除结点的前一个结点（因为slow是由虚拟头结点开始的）
+接下来正常进行删除操作即可
